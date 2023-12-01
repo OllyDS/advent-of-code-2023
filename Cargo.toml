@@ -1,0 +1,15 @@
+[package]
+name = "advent-of-code-2023"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name = "aoc"
+path = "src/lib.rs"
+
+[[bin]]
+name = "aoc"
+path = "src/bin/main.rs"
+
+[dependencies]
+itertools = "0.10.5"
