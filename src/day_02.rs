@@ -4,7 +4,7 @@ use itertools::Itertools;
 
 use crate::utils::convert_file_to_vec;
 
-pub fn day_two_calc() {
+pub fn day_two_part_one_calc() {
     let contents: Vec<String> = convert_file_to_vec("./src/files/day_02.txt".to_string());
 
     let max_values: HashMap<&str, i32> = HashMap::from([
@@ -42,5 +42,46 @@ pub fn day_two_calc() {
     });
 
     let total: i32 = valid_games.keys().sum();
-    print!("day 2 answer: {:?}", total);
+    print!("day 2.1 answer: {:?}\n", total);
+}
+
+pub fn day_two_part_two_calc() {
+    let contents: Vec<String> = convert_file_to_vec("./src/files/day_02.txt".to_string());
+
+    let mut powers: Vec<i32> = Vec::new();
+    
+    contents.iter().for_each(|row: &String| {
+        let mut min_values: HashMap<&str, i32> = HashMap::new();
+        let initial_split: Vec<&str> = row.split(":").collect_vec();
+        let colors: String = initial_split[1].split(|string| string == ';' || string == ',').collect::<String>();
+
+        let mut temp_num: i32 = 0;
+        for color in colors.trim().split(" ") {
+            if color.parse::<i32>().is_ok() {
+                // convert & store the int for comparison in our next loop
+                temp_num = color.parse::<i32>().expect("Our char to parse to an int successfully");
+            } else {
+                // check to see if the key already exists
+                if min_values.contains_key(color) {
+                    // if so, is the temp number higher than the one we have stored?
+                    if temp_num > *min_values.get(&color).unwrap() {
+                        // if so, replace it
+                        min_values.insert(color, temp_num);
+                    }
+                    // if not, move on to the next color
+                    continue;
+                }
+                // if it doesn't exist, add a new record for the color
+                min_values.insert(color, temp_num);
+            }
+        }
+
+        // multiply all the numbers collected in the current game. 'fold' is the same as a 'reduce' fn
+        let game_power: i32 = min_values.values().into_iter().fold(1,|a, b| a * b);
+        // store the number in an array
+        powers.push(game_power);
+    });
+
+    let total: i32 = powers.iter().sum();
+    print!("day 2.2 answer: {:?}\n", total);
 }
